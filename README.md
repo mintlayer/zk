@@ -12,8 +12,8 @@ This Zk implementation is made by Salusec (https://salusec.io/) to enhance Mintl
   
 The ZkThunder project includes two setup directories, next to the main implementation of zero-knowledge proof based Mintlayer blockchain service :
 
-- `./local-setup`: Containing the docker-compose file that organizes the entire project and other necessary configuration files (e.g., explorer json) for blockchain.
-- `./local-setup-test`: Some test scripts and contracts for developers to deploy and call the contracts on the blockchain.
+- `setup/local`: Containing the docker-compose file that organizes the entire project and other necessary configuration files (e.g., explorer json) for blockchain.
+- `setup/test`: Some test scripts and contracts for developers to deploy and call the contracts on the blockchain.
   
 Following are the core components of ZkThunder project:
   
@@ -64,8 +64,6 @@ cargo  install  sqlx-cli  --version  0.8.0
 First, you shall set the environment variable in ZkThunder directory, in a terminal do:
   
 ```sh
-cd  ZkThunder 
-
 export ZKSYNC_HOME=`pwd` 
 
 export PATH=$ZKSYNC_HOME/bin:$PATH
@@ -100,41 +98,121 @@ ZKSYNC_HOME=`pwd`  PATH=$ZKSYNC_HOME/bin:$PATH  zk  docker  build  local-node  -
 The built images will be used in the docker-compose cluster, and make sure you have built the server-v2 image at first. Otherwise the local-node image will fail.
   
 ## Deploy
-  
 ### Mintlayer Node Deployment
-  
-To run the ZkThunder project, you shall have a Mintlayer node and a RPC wallet running locally. For example, if you have a official version of mintlayer-core, run following command in mintlayer-core directory:
-  
+### Mintlayer Node Deployment
+
+To run the ZkThunder project, you need a Mintlayer node and a RPC wallet running locally. There are two main methods to set this up: using cargo directly or using Docker Compose.
+
+#### Method 1: Using Cargo
+
+If you have an official version of mintlayer-core, run the following commands in the mintlayer-core directory:
+
 ```sh
-# run a node daemon
-cargo  run  --release  --bin  node-daemon  --  testnet 2>&1 | tee  ../mintlayer.log
-# run a RPC wallet daemon, in another terminal
-cargo  run  --release  --bin  wallet-rpc-daemon  --  testnet  --rpc-no-authentication 2>&1 | tee  ../wallet-cli.log
-```
-  
-Then, use a python script(or other way you like) to open the wallet, of course you need a rich wallet address to send the transactions:  
+# Run a node daemon
+cargo run --release --bin node-daemon -- testnet 2>&1 | tee ../mintlayer.log
 
-```python
-import requests
-import json
-
-rpc_url = 'http://127.0.0.1:13034' 
-headers = {'content-type': 'application/json'}  
-
-payload = {  
-            "method": "wallet_open",  
-            "params": {  
-                        "path": "path/to/wallet.dat",  
-                        },  
-            "jsonrpc": "2.0",  
-            "id": 1,  
-            }  
-response = requests.post(rpc_url, data=json.dumps(payload), headers=headers)  
-print(response.json())
+# Run a RPC wallet daemon (in another terminal)
+cargo run --release --bin wallet-rpc-daemon -- testnet --wallet-file <PATH_TO_WALLET> --rpc-username <USER> --rpc-password <PASS> 2>&1 | tee ../wallet-cli.log
 ```
 
-Note that the rpc_url  is the local port of Mintlayer RPC wallet.
-  
+Make sure to replace `<PATH_TO_WALLET>`, `<USER>`, and `<PASS>` with your actual wallet file path, username, and password respectively.
+
+Important notes:
+
+1. The `--wallet-file` option specifies the wallet file to operate on. You can set this via the environment variable `ML_TESTNET_WALLET_RPC_DAEMON_WALLET_FILE`.
+
+2. It's recommended to set a username and password for RPC authentication:
+   - Use `--rpc-username` to set the username (can be set via `ML_TESTNET_WALLET_RPC_DAEMON_RPC_USERNAME` env var)
+   - Use `--rpc-password` to set the password (can be set via `ML_TESTNET_WALLET_RPC_DAEMON_RPC_PASSWORD` env var)
+
+3. If you don't set a username and password, a cookie file will be created for authentication.
+
+4. Alternatively, you can use `--rpc-no-authentication` to run the wallet service without RPC authentication, but this is not recommended for security reasons.
+
+#### Method 2: Using Docker Compose
+
+For a more containerized approach, you can use Docker Compose. Here's an example `docker-compose.yml` file:
+
+```yaml
+services:
+  node-daemon:
+    image: "mintlayer/node-daemon:latest"
+    command: "node-daemon testnet"
+    environment:
+      RUST_LOG: "info"
+      ML_USER_ID: "1000"
+      ML_GROUP_ID: "1000"
+      ML_TESTNET_NODE_RPC_BIND_ADDRESS: "0.0.0.0:13030"
+      ML_TESTNET_NODE_P2P_BIND_ADDRESSES: "0.0.0.0:44311"
+      ML_TESTNET_NODE_RPC_USERNAME: "node_rpc_user"
+      ML_TESTNET_NODE_RPC_PASSWORD: "ay_2Gm}NL+O+$c(tqJk:" # WARNING: Change this password before using in production
+    ports:
+      - "127.0.0.1:13030:13030"
+      - "44311:44311"
+    volumes:
+      - "./mintlayer-data:/home/mintlayer"
+
+  wallet-rpc-daemon:
+    image: "mintlayer/wallet-rpc-daemon:latest"
+    command: "wallet-rpc-daemon testnet"
+    depends_on:
+      - "node-daemon"
+    environment:
+      RUST_LOG: "info"
+      ML_USER_ID: "1000"
+      ML_GROUP_ID: "1000"
+      ML_TESTNET_WALLET_RPC_DAEMON_NODE_RPC_ADDRESS: "node-daemon:13030"
+      ML_TESTNET_WALLET_RPC_DAEMON_NODE_RPC_USERNAME: "node_rpc_user"
+      ML_TESTNET_WALLET_RPC_DAEMON_NODE_RPC_PASSWORD: "ay_2Gm}NL+O+$c(tqJk:" # WARNING: Change this password before using in production
+      ML_TESTNET_WALLET_RPC_DAEMON_RPC_BIND_ADDRESS: "0.0.0.0:3034"
+      ML_TESTNET_WALLET_RPC_DAEMON_RPC_USERNAME: "wallet_rpc_user"
+      ML_TESTNET_WALLET_RPC_DAEMON_RPC_PASSWORD: "ceQd;;CIO60{FYd<odu]"
+    ports:
+      - "127.0.0.1:3034:3034"
+    volumes:
+      - "./mintlayer-data:/home/mintlayer"
+
+  wallet-cli:
+    image: "mintlayer/wallet-cli:latest"
+    command: "wallet-cli testnet"
+    depends_on:
+      - "node-daemon"
+    environment:
+      RUST_LOG: "info"
+      ML_USER_ID: "1000"
+      ML_GROUP_ID: "1000"
+      ML_TESTNET_WALLET_NODE_RPC_ADDRESS: "node-daemon:13030"
+      ML_TESTNET_WALLET_NODE_RPC_USERNAME: "node_rpc_user"
+      ML_TESTNET_WALLET_NODE_RPC_PASSWORD: "ay_2Gm}NL+O+$c(tqJk:" # WARNING: Change this password before using in production
+    volumes:
+      - "./mintlayer-data:/home/mintlayer"
+    profiles:
+      - "wallet_cli"
+```
+
+To use this Docker Compose setup:
+
+1. Save the above content in a file named `docker-compose.yml` in your project directory.
+2. Make sure Docker and Docker Compose are installed on your system.
+3. Open a terminal in the directory containing the `docker-compose.yml` file.
+4. Run the following command to start the services:
+
+   ```
+   docker-compose up -d
+   ```
+
+   This will start the node-daemon and wallet-rpc-daemon services in detached mode.
+
+5. To use the wallet-cli, you can run:
+
+   ```
+   docker-compose --profile wallet_cli run wallet-cli
+   ```
+
+Remember to change the passwords in the Docker Compose file before using it in a production environment.
+
+Whichever method you choose, ensure you're using a wallet with sufficient funds to send transactions for your project.
+
 ### ZkThunder Docker Deployment
   
 To deploy the ZkThunder service, just run the scripts in the local-setup directory, make sure that there are no other related container running:
