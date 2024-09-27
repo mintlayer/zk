@@ -1,18 +1,25 @@
-# ZKMintlayer User Document
-  
+# ZkThunder User Document
+
+## Attribution
+
+ZkThunder is a derivative work based on ZkSync. We would like to acknowledge and thank the ZkSync team for their groundbreaking work in the field of zero-knowledge proofs and Layer 2 scaling solutions.
+
+For more information about ZkSync, please visit their GitHub repository: https://github.com/matter-labs/zksync
+
+This Zk implementation is made by Salusec (https://salusec.io/) to enhance Mintlayer network. 
+
 ## Project Overview
   
-The ZKMintlayer project includes three main directories:
+The ZkThunder project includes two setup directories, next to the main implementation of zero-knowledge proof based Mintlayer blockchain service :
 
 - `./local-setup`: Containing the docker-compose file that organizes the entire project and other necessary configuration files (e.g., explorer json) for blockchain.
 - `./local-setup-test`: Some test scripts and contracts for developers to deploy and call the contracts on the blockchain.
-- `./zkmintlayer`: An implementation of zero-knowledge proof based Mintlayer blockchain service.
   
-Following are the core components of ZKMintlayer project:
+Following are the core components of ZkThunder project:
   
 - **4EVERLAND**: A holistic storage network compatible with IPFS. We use it as an IPFS-like storage system to save all the blockchain batch information.
-- **Mintlayer node and RPC wallet**: A Mintlayer node and a wallet should be deployed locally since the ZKMintlayer server will interact with it.
-- **ZKMintlayer Docker Images**: The ZKMintlayer server and other necessary services (explorer, reth node, etc.) are running in docker-compose cluster.
+- **Mintlayer node and RPC wallet**: A Mintlayer node and a wallet should be deployed locally since the ZkThunder server will interact with it.
+- **ZkThunder Docker Images**: The ZkThunder server and other necessary services (explorer, reth node, etc.) are running in docker-compose cluster.
   
 ## Dependencies
   
@@ -54,10 +61,10 @@ cargo  install  sqlx-cli  --version  0.8.0
   
 ### Environment and Initialization
   
-First, you shall set the environment variable in zkmintlayer directory, in a terminal do:
+First, you shall set the environment variable in ZkThunder directory, in a terminal do:
   
 ```sh
-cd  zkmintlayer 
+cd  ZkThunder 
 
 export ZKSYNC_HOME=`pwd` 
 
@@ -82,12 +89,12 @@ ZKSYNC_HOME=`pwd`  PATH=$ZKSYNC_HOME/bin:$PATH  zk  down
 
 ### Build Images
   
-Now you can build docker images over a initialized ZKMintlayer project:
+Now you can build docker images over a initialized ZkThunder project:
   
 ```sh
-ZKSYNC_HOME=`pwd`  PATH=$ZKSYNC_HOME/bin:$PATH  zk  docker  build  server-v2  --custom-tag  "zkmintlayer" 
+ZKSYNC_HOME=`pwd`  PATH=$ZKSYNC_HOME/bin:$PATH  zk  docker  build  server-v2  --custom-tag  "ZkThunder" 
 
-ZKSYNC_HOME=`pwd`  PATH=$ZKSYNC_HOME/bin:$PATH  zk  docker  build  local-node  --custom-tag  "zkmintlayer"
+ZKSYNC_HOME=`pwd`  PATH=$ZKSYNC_HOME/bin:$PATH  zk  docker  build  local-node  --custom-tag  "ZkThunder"
 ```
   
 The built images will be used in the docker-compose cluster, and make sure you have built the server-v2 image at first. Otherwise the local-node image will fail.
@@ -96,7 +103,7 @@ The built images will be used in the docker-compose cluster, and make sure you h
   
 ### Mintlayer Node Deployment
   
-To run the ZKMintlayer project, you shall have a Mintlayer node and a RPC wallet running locally. For example, if you have a official version of mintlayer-core, run following command in mintlayer-core directory:
+To run the ZkThunder project, you shall have a Mintlayer node and a RPC wallet running locally. For example, if you have a official version of mintlayer-core, run following command in mintlayer-core directory:
   
 ```sh
 # run a node daemon
@@ -128,9 +135,9 @@ print(response.json())
 
 Note that the rpc_url  is the local port of Mintlayer RPC wallet.
   
-### ZKMintlayer Docker Deployment
+### ZkThunder Docker Deployment
   
-To deploy the ZKMintlayer service, just run the scripts in the local-setup directory, make sure that there are no other related container running:
+To deploy the ZkThunder service, just run the scripts in the local-setup directory, make sure that there are no other related container running:
   
 ```sh
 cd ../local-setup 
@@ -138,16 +145,16 @@ cd ../local-setup
 sudo  ./start.sh
 ```
   
-The script will bootstrap a docker cluster, which contains a complete ZKMintlayer running  service. If it works, you may see the output in terminal like this, which means the docker cluster is running normally:
+The script will bootstrap a docker cluster, which contains a complete ZkThunder running  service. If it works, you may see the output in terminal like this, which means the docker cluster is running normally:
   
 ```sh
 ... 
-zkmintlayer-1| 2024-08-01T07:25:32.922492Z   INFO  loop_iteration{l1_block_numbers=L1BlockNumbers  {  safe:  L1BlockNumber(847),  finalized:  L1BlockNumber(847),  latest:  L1BlockNumber(848) }}:  zksync_eth_sender::eth_tx_manager:  Loop  iteration  at  block  848 
-zkmintlayer-1| 2024-08-01T07:25:32.923338Z   INFO  loop_iteration{l1_block_numbers=L1BlockNumbers  {  safe:  L1BlockNumber(847),  finalized:  L1BlockNumber(847),  latest:  L1BlockNumber(848) }}:  zksync_eth_sender::eth_tx_manager:  Sending  tx  38  at  block  848  with  base_fee_per_gas  1,  priority_fee_per_gas  1000000000,  blob_fee_per_gas  None 
+ZkThunder-1| 2024-08-01T07:25:32.922492Z   INFO  loop_iteration{l1_block_numbers=L1BlockNumbers  {  safe:  L1BlockNumber(847),  finalized:  L1BlockNumber(847),  latest:  L1BlockNumber(848) }}:  zksync_eth_sender::eth_tx_manager:  Loop  iteration  at  block  848 
+ZkThunder-1| 2024-08-01T07:25:32.923338Z   INFO  loop_iteration{l1_block_numbers=L1BlockNumbers  {  safe:  L1BlockNumber(847),  finalized:  L1BlockNumber(847),  latest:  L1BlockNumber(848) }}:  zksync_eth_sender::eth_tx_manager:  Sending  tx  38  at  block  848  with  base_fee_per_gas  1,  priority_fee_per_gas  1000000000,  blob_fee_per_gas  None 
 ...
 ```
 
-Or you want to run ZKMintlayer in background, just modify the `./local-setup/start.sh` script, plus -d at the end of command:
+Or you want to run ZkThunder in background, just modify the `./local-setup/start.sh` script, plus -d at the end of command:
   
 ```sh
 # In ./start.sh 
@@ -155,7 +162,7 @@ Or you want to run ZKMintlayer in background, just modify the `./local-setup/sta
 docker  compose  up  -d
 ```
 
-To stop the ZKMintlayer docker service, run:
+To stop the ZkThunder docker service, run:
   
 ```sh
 cd  ../local-setup 
@@ -163,9 +170,9 @@ cd  ../local-setup
 sudo  ./clear.sh
 ```
   
-### ZKMintlayer Test
+### ZkThunder Test
   
-With a running ZKMintlayer docker cluster and a local Mintlayer node(as well as open wallet), you can do tests of deploying contracts and calling contracts by provided scripts. But first, you need to install the dependencies:
+With a running ZkThunder docker cluster and a local Mintlayer node(as well as open wallet), you can do tests of deploying contracts and calling contracts by provided scripts. But first, you need to install the dependencies:
   
 ```sh
 cd  ./local-setup-test 
@@ -210,15 +217,15 @@ Also, during the initial bootstrapping of the system, several ERC-20 contracts a
 
 ## Docker-compose Configuration
   
-Now let’s make a deep dive into the docker-compose.yaml to see how the ZKMintlayer work.
+Now let’s make a deep dive into the docker-compose.yaml to see how the ZkThunder work.
   
-This docker compose is setting up the full ZKMintlayer network, consisting of:
+This docker compose is setting up the full ZkThunder network, consisting of:
   
 - L1 (private reth) with explorer (blockscout)
 
 - a single postgres (with all the databases)
 
-- L2 ZKMintlayer chain, together with its explorer
+- L2 ZkThunder chain, together with its explorer
 
 - hyperexplorer to merge L1, L2 all together.
 
@@ -236,7 +243,7 @@ For the ports setting:
 
 1. <http://localhost:15001> - http
   
-- L2 chain (zkmintlayer):
+- L2 chain (ZkThunder):
 
 1. <http://localhost:15100> - http rpc
 2. <http://localhost:15101> - ws rpc
@@ -249,10 +256,10 @@ For the ports setting:
 4. 15104 - explorer data-fetcher
 5. 15105 - explorer api metrics
   
-In this section, we focus on introducing the services named proxy-relay and zkmintlayer, see their settings in docker-compose.yaml below:
+In this section, we focus on introducing the services named proxy-relay and ZkThunder, see their settings in docker-compose.yaml below:
 
 ```yaml
-# zkmintlayer
+# ZkThunder
   
 proxy-relay:  
     image: alpine/socat:latest  
@@ -261,10 +268,10 @@ proxy-relay:  
     extra_hosts:  
       - host.docker.internal:host-gateway  
 
- zkmintlayer:  
+ ZkThunder:  
     stdin_open: true  
     tty: true  
-    image: matterlabs/local-node:${INSTANCE_TYPE:-zkmintlayer}  
+    image: matterlabs/local-node:${INSTANCE_TYPE:-ZkThunder}  
     healthcheck:  
       test: curl --fail http://localhost:3071/health || exit 1  
       interval: 10s  
@@ -281,7 +288,7 @@ proxy-relay:  
       - ML_BATCH_SIZE=10 # change if necessary  
       - 4EVERLAND_API_KEY=5F2R8SK2EQNSNCHSRWIK # only for test  
       - 4EVERLAND_SECRET_KEY=sCGfIdQZfis8YVCXnQP53SL8cPdRxyzjPLh1KYmF # only for test  
-      - 4EVERLAND_BUCKET_NAME=zkmintlayer # only for test  
+      - 4EVERLAND_BUCKET_NAME=ZkThunder # only for test  
     ports:  
       - 15100:3050 # JSON RPC HTTP port  
       - 15101:3051 # JSON RPC WS port  
@@ -299,7 +306,7 @@ proxy-relay:  
   
 The proxy-relay service forwards the request inside the docker to the local address on the machine, so the service inside the docker can access the Mintlayer network.
   
-In zkmintlayer’s environment settings:
+In ZkThunder’s environment settings:
   
 - **ML_RPC_URL** stands for the RPC wallet port of Mintlayer.
 
@@ -406,7 +413,7 @@ if root_hash.is_some() {  
   
 ## Development
   
-One can easily develop his/her own ZKMintlayer service by modifying the zkmintlayer code. The following command may help you quickly run the service:  
+One can easily develop his/her own ZkThunder service by modifying the ZkThunder code. The following command may help you quickly run the service:  
 
 ```sh
 # enable zk tools
@@ -415,9 +422,9 @@ ZKSYNC_HOME=`pwd`  PATH=$ZKSYNC_HOME/bin:$PATH  zk
 ZKSYNC_HOME=`pwd`  PATH=$ZKSYNC_HOME/bin:$PATH  zk  init 
 # start the docker container  
 ZKSYNC_HOME=`pwd`  PATH=$ZKSYNC_HOME/bin:$PATH  zk  up 
-# start the zkmintlayer server  
+# start the ZkThunder server  
 ZKSYNC_HOME=`pwd`  PATH=$ZKSYNC_HOME/bin:$PATH  zk  server 
-# stop the zkmintlayer container  
+# stop the ZkThunder container  
 ZKSYNC_HOME=`pwd`  PATH=$ZKSYNC_HOME/bin:$PATH  zk  down 
 # clean all the generated stuff by zk init  
 ZKSYNC_HOME=`pwd`  PATH=$ZKSYNC_HOME/bin:$PATH  zk  clean  --all
