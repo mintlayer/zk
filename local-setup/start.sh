@@ -6,7 +6,7 @@
 # see https://hub.docker.com/r/matterlabs/local-node/tags for full list.
 # latest2.0 - is the 'main' one.
 
-INSTANCE_TYPE=${1:-zkmintlayer}
+INSTANCE_TYPE=${1:-zkthunder}
 
 export INSTANCE_TYPE=$INSTANCE_TYPE
 echo "Starting ZKMintlayer with instance type: $INSTANCE_TYPE"
@@ -15,7 +15,7 @@ docker compose pull
 docker compose up
 
 check_all_services_healthy() {
-  service="zkmintlayer"
+  service="zkthunder"
   # service="zksync"
   (docker compose ps $service | grep "(healthy)")
   if [ $? -eq 0 ]; then
