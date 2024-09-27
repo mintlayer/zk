@@ -1,7 +1,7 @@
 # Image is always built from the server image to reuse the common parts
 # This image is expected to be built locally beforehand (implemented in the `zk` tool)
 # ARG BASE_VERSION=latest2.0
-ARG BASE_VERSION=zkmintlayer
+ARG BASE_VERSION=zkthunder
 FROM matterlabs/server-v2:${BASE_VERSION}
 
 WORKDIR /

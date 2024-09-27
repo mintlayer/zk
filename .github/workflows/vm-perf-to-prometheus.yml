@@ -1,9 +1,9 @@
-name: Push main branch VM benchmarks to Prometheus
+name: Push master branch VM benchmarks to Prometheus
 
 on:
   push:
     branches:
-      - main
+      - master
   workflow_dispatch:
 
 # Disable simultaneous deployments into a single environment

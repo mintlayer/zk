@@ -8,9 +8,9 @@
             "shared_bridges": {
                 "kl_exp": {
                     "chains": {
-                        "zkmintlayer": {
+                        "zkthunder": {
                             "chain_id": "0x10e",
-                            "l2_url": "http://zkmintlayer:3050",
+                            "l2_url": "http://zkthunder:3050",
                             "explorer": "http://localhost:15005/?network=local",
                             "type": "rollup"
                         }

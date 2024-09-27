@@ -1,13 +1,13 @@
 
 # - L1 (reth) with explorer (blockscout)
 # - a single postgres (with all the databases)
-# - L2 zkmintlayer chain, together with its explorer
+# - L2 zkthunder chain, together with its explorer
 
 # Ports:
 #  - l1 explorer:  http://localhost:25001 (also using 25001, 25002, 25003)
 #  - L1 chain (reth): 
 #      - 25045 - rpc
-#  - L2 chain (zkmintlayer):
+#  - L2 chain (zkthunder):
 #      - 25100 - http
 #      - 25101 - ws
 
@@ -52,10 +52,10 @@ services:
       POSTGRES_PORT: 5432
     restart: unless-stopped
 
-  zkmintlayer:
+  zkthunder:
     stdin_open: true
     tty: true
-    image: matterlabs/local-node:${INSTANCE_TYPE:-zkmintlayer-dev}
+    image: matterlabs/local-node:${INSTANCE_TYPE:-zkthunder-dev}
     healthcheck:
       test: curl --fail http://localhost:3071/health || exit 1
       interval: 10s
@@ -72,7 +72,7 @@ services:
       - ML_BATCH_SIZE=10 # change if necessary
       - 4EVERLAND_API_KEY=5F2R8SK2EQNSNCHSRWIK # only for test
       - 4EVERLAND_SECRET_KEY=sCGfIdQZfis8YVCXnQP53SL8cPdRxyzjPLh1KYmF # only for test
-      - 4EVERLAND_BUCKET_NAME=zkmintlayer # only for test
+      - 4EVERLAND_BUCKET_NAME=zkthunder # only for test
     ports:
       - 127.0.0.1:25100:3050 # JSON RPC HTTP port
       - 127.0.0.1:25101:3051 # JSON RPC WS port

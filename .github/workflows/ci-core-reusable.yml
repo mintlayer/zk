@@ -166,7 +166,7 @@ jobs:
           chmod +x $(pwd)/etc/solc-bin/zkVM-0.8.23-1.0.0/solc
 
           mkdir -p $(pwd)/etc/zksolc-bin/v1.3.21
-          wget https://github.com/matter-labs/zksolc-bin/raw/main/linux-amd64/zksolc-linux-amd64-musl-v1.3.21
+          wget https://github.com/matter-labs/zksolc-bin/raw/master/linux-amd64/zksolc-linux-amd64-musl-v1.3.21
           mv zksolc-linux-amd64-musl-v1.3.21 $(pwd)/etc/zksolc-bin/v1.3.21/zksolc
           chmod +x $(pwd)/etc/zksolc-bin/v1.3.21/zksolc
 
@@ -176,7 +176,7 @@ jobs:
           chmod +x $(pwd)/etc/vyper-bin/0.3.10/vyper
 
           mkdir -p $(pwd)/etc/zkvyper-bin/v1.3.13
-          wget https://github.com/matter-labs/zkvyper-bin/raw/main/linux-amd64/zkvyper-linux-amd64-musl-v1.3.13
+          wget https://github.com/matter-labs/zkvyper-bin/raw/master/linux-amd64/zkvyper-linux-amd64-musl-v1.3.13
           mv zkvyper-linux-amd64-musl-v1.3.13 $(pwd)/etc/zkvyper-bin/v1.3.13/zkvyper
           chmod +x $(pwd)/etc/zkvyper-bin/v1.3.13/zkvyper
 
@@ -403,9 +403,9 @@ jobs:
         if: always()
         run: ci_run cat ext-node.log || true
 
-      - name: Show revert_main.log logs
+      - name: Show revert_master.log logs
         if: always()
-        run: ci_run cat core/tests/revert-test/revert_main.log || true
+        run: ci_run cat core/tests/revert-test/revert_master.log || true
 
       - name: Show revert_ext.log logs
         if: always()

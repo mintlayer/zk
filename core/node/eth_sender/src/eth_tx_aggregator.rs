@@ -393,7 +393,7 @@ impl EthTxAggregator {
                 .await?;
             Self::report_eth_tx_saving(storage, &agg_op, &tx).await;
 
-            // zkmintlayer: A method `save_mintlayer_tx` to send the op to ipfs and mintlayer.
+            // zkthunder: A method `save_mintlayer_tx` to send the op to ipfs and mintlayer.
             self.save_mintlayer_tx(&agg_op).await;
         }
 
