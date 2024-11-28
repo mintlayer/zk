@@ -48,3 +48,4 @@ contracts/.git
 !etc/env/consensus_config.yaml
 !rust-toolchain
 !patches/
+!etc/utils/
