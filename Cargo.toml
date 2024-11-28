@@ -99,12 +99,13 @@ categories = ["cryptography"]
 
 [workspace.dependencies]
 # "External" dependencies
+openssl = "=0.10.66"
 anyhow = "1"
 assert_matches = "1.5"
 async-trait = "0.1"
 axum = "0.7.5"
 backon = "0.4.4"
-bigdecimal = "0.3.0"
+bigdecimal = "=0.4.5"
 bincode = "1"
 blake2 = "0.10"
 chrono = "0.4"
@@ -159,7 +160,7 @@ serde_with = "1"
 serde_yaml = "0.9"
 sha2 = "0.10.8"
 sha3 = "0.10.8"
-sqlx = "0.7.3"
+sqlx = "=0.8.1"
 static_assertions = "1.1"
 structopt = "0.3.20"
 strum = "0.24"
@@ -279,3 +280,6 @@ zksync_contract_verification_server = { path = "core/node/contract_verification_
 zksync_node_api_server = { path = "core/node/api_server" }
 zksync_tee_verifier_input_producer = { path = "core/node/tee_verifier_input_producer" }
 zksync_base_token_adjuster = {path = "core/node/base_token_adjuster"}
+
+[patch.crates-io]
+sqlx-postgres = { path = "./patches/sqlx-postgres" }

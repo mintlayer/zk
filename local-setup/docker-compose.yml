@@ -1,9 +1,9 @@
-# This docker compose is setting up the full ZKMintlayer network, consisting of:
+# This docker compose is setting up the full zkthunder network, consisting of:
 #
 # - L1 (private reth) with explorer (blockscout)
 # - a single postgres (with all the databases)
 # - a ipfs node
-# - L2 zkmintlayer chain, together with its explorer
+# - L2 zkthunder chain, together with its explorer
 # - hyperexplorer to merge L1, L2 all together.
 
 # Ports (if a port is written in the form http://localhost:PORT, it means that it can be accessed from the other machine):
@@ -17,7 +17,7 @@
 #      - http://localhost:15002 - 
 #      - http://localhost:15003 -
 
-#  - L2 chain (zkmintlayer):
+#  - L2 chain (zkthunder):
 #      - http://localhost:15100 - http rpc
 #      - http://localhost:15101 - ws rpc
 #  - L2 explorer:  
@@ -30,7 +30,7 @@
 # Database is on 15432
 # pgAdmin to manage PostgreSQL DB is on 15430
 
-# Besides, mintlayer rpc is on 13034/3034, change this in the zkmintlayer service if needed.
+# Besides, mintlayer rpc is on 13034/3034, change this in the zkthunder service if needed.
 
 services:
   reth:
@@ -90,7 +90,7 @@ services:
       POSTGRES_PORT: 5432
     restart: unless-stopped
 
-  # zkmintlayer
+  # zkthunder
   proxy-relay:
     image: alpine/socat:latest
     network_mode: host
@@ -98,10 +98,10 @@ services:
     extra_hosts:
       - host.docker.internal:host-gateway
 
-  zkmintlayer:
+  zkthunder:
     stdin_open: true
     tty: true
-    image: matterlabs/local-node:${INSTANCE_TYPE:-zkmintlayer}
+    image: matterlabs/local-node:${INSTANCE_TYPE:-zkthunder}
     healthcheck:
       test: curl --fail http://localhost:3071/health || exit 1
       interval: 10s
@@ -118,7 +118,7 @@ services:
       - ML_BATCH_SIZE=10 # change if necessary
       - 4EVERLAND_API_KEY=5F2R8SK2EQNSNCHSRWIK # only for test
       - 4EVERLAND_SECRET_KEY=sCGfIdQZfis8YVCXnQP53SL8cPdRxyzjPLh1KYmF # only for test
-      - 4EVERLAND_BUCKET_NAME=zkmintlayer # only for test 
+      - 4EVERLAND_BUCKET_NAME=zkthunder # only for test 
     ports:
       - 15100:3050 # JSON RPC HTTP port
       - 15101:3051 # JSON RPC WS port
@@ -139,7 +139,7 @@ services:
     environment:
       - PORT=3040
       - LOG_LEVEL=verbose
-      - BLOCKCHAIN_RPC_URL=http://zkmintlayer:3050
+      - BLOCKCHAIN_RPC_URL=http://zkthunder:3050
     ports:
       - 127.0.0.1:15104:3040
     restart: unless-stopped
@@ -155,7 +155,7 @@ services:
       - DATABASE_USER=postgres
       - DATABASE_PASSWORD=notsecurepassword
       - DATABASE_NAME=block-explorer
-      - BLOCKCHAIN_RPC_URL=http://zkmintlayer:3050
+      - BLOCKCHAIN_RPC_URL=http://zkthunder:3050
       - DATA_FETCHER_URL=http://data-fetcher-main:3040
       - BATCHES_PROCESSING_POLLING_INTERVAL=1000
     ports:
@@ -264,7 +264,7 @@ services:
 
   hyperexplorer:
     depends_on:
-      zkmintlayer:
+      zkthunder:
         condition: service_healthy
     image: ghcr.io/mm-zk/zksync_tools:latest
     ports:

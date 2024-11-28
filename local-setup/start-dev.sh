@@ -6,16 +6,16 @@
 # see https://hub.docker.com/r/matterlabs/local-node/tags for full list.
 # latest2.0 - is the 'main' one.
 
-INSTANCE_TYPE=${1:-zkmintlayer-dev}
+INSTANCE_TYPE=${1:-zkthunder-dev}
 
 export INSTANCE_TYPE=$INSTANCE_TYPE
-echo "Starting ZKMintlayer Dev with instance type: $INSTANCE_TYPE"
+echo "Starting zkthunder Dev with instance type: $INSTANCE_TYPE"
 docker compose -f docker-compose-dev.yml pull
 docker compose -f docker-compose-dev.yml up 
 # docker compose -f docker-compose-dev.yml up -d
 
 check_all_services_healthy() {
-  service="zkmintlayer"
+  service="zkthunder"
   # service="zksync"
   (docker compose ps $service | grep "(healthy)")
   if [ $? -eq 0 ]; then
@@ -39,7 +39,7 @@ DARKGRAY='\033[0;30m'
 ORANGE='\033[0;33m'
 echo -e "${GREEN}"
 
-echo -e "SUCCESS, Your local ZKMintlayer Dev is now running! Find the information below for accessing each service."
+echo -e "SUCCESS, Your local zkthunder Dev is now running! Find the information below for accessing each service."
 echo -e "┌──────────────────────────┬────────────────────────┬──────────────────────────────────────────────────┐"
 echo -e "│         Service          │          URL           │                   Description                    │"
 echo -e "├──────────────────────────┼────────────────────────┼──────────────────────────────────────────────────┤"

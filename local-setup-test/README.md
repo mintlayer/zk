@@ -31,7 +31,7 @@ Make sure to get the correct bridgehub address (in this example: 0x35A3783781DE0
 reth: only "reth:v0.2.0-beta.2"
 instance-type:
 
-- zkmintlayer: can deploy contract and transfer
+- zkthunder: can deploy contract and transfer
 - latest2.0: can transfer
 - hyperlocal: can deploy contract and transfer
 
